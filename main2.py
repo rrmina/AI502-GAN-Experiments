@@ -11,8 +11,8 @@ from loss import real_loss, fake_loss
 import utils
 
 # GLOBAL SETTINGS
-BATCH_SIZE = 256
-LATENT_DIM = 100
+BATCH_SIZE = 64
+LATENT_DIM = 128
 H = 28
 W = 28
 A_LR = 2e-4
