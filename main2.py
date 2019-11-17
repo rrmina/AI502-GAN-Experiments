@@ -33,7 +33,8 @@ def train():
 
     # Dataset and DataLoader
     transform = transforms.Compose([
-        transforms.ToTensor()
+        transforms.ToTensor(),
+        transforms.Normalize((0.0,),(1.0,))
     ])
     train_dataset = datasets.MNIST('data', train=True, transform=transform, download=True)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
@@ -47,7 +48,7 @@ def train():
     g_optim = optim.Adam(g.parameters(), lr=G_LR, betas=[BETA_1, BETA_2])
 
     def generate_latent(batch_size, latent_dim):
-        return torch.empty(batch_size, latent_dim).uniform_(-1,1).to(device)
+        return torch.empty(batch_size, latent_dim).normal_(0,1).to(device)
 
     # Generate a fixed latent vector. This will be used 
     # in monitoring the improvement of generator network
