@@ -15,12 +15,38 @@ W = 28
 LATENT_DIM = 128
 
 # Number of Images
-NUM_IMAGES = 20
+NUM_IMAGES = 100
+NUM_ROWS_SAMPLE = 10
 
-def generate_latent(batch_size, latent_dim, device):
+###########################################################
+# Helper Functions for producing latent variables
+###########################################################
+def generate_latent_uniform(batch_size, latent_dim, device):
     return torch.empty(batch_size, latent_dim).uniform_(-1,1).to(device)
 
-def generate_images():
+def generate_latent_normal(batch_size, latent_dim, device):
+    return torch.empty(batch_size, latent_dim).normal_(0,1).to(device)
+
+def generate_latent_sweep(batch_size, latent_dim, device):
+
+    # Placeholder Tensor
+    z = torch.empty(batch_size, latent_dim).to(device)
+
+    # Sweep Values
+    step = 2 / batch_size
+    sweep = np.arange(-1, 1, step)
+    sweep = torch.from_numpy(sweep).to(device).float()
+
+    # Replace placeholder with sweep values
+    for i in range(128):
+        z.T[i] = sweep
+    
+    return z
+
+############################
+# Generate Function
+############################
+def generate_images(latent="uniform"):
     # Device
     device = ("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -29,21 +55,28 @@ def generate_images():
     g.load_state_dict(torch.load(GENERATOR_MODEL_PATH))
     g = g.to(device)
 
+    # Generate latent vectors
+    if (latent=="uniform"):
+        z = generate_latent_uniform(NUM_IMAGES, LATENT_DIM, device)
+    elif (latent == "normal"):
+        z = generate_latent_normal(NUM_IMAGES, LATENT_DIM, device)
+    elif (latent == "sweep"):
+        z = generate_latent_sweep(NUM_IMAGES, LATENT_DIM, device)
+
     with torch.no_grad():
         torch.cuda.empty_cache()
         print("Generating Images")
         
-        z = generate_latent(NUM_IMAGES, LATENT_DIM, device) # Latent Variables
+        # Generate image tensor | Transform tensor to numpy arrays
         generated_tensor = g(z)
         generated_tensor = generated_tensor.view(-1, H, W)
-
         generated_images = ttoi(generated_tensor)
-        #plt.imshow(generated_images[0])
-        #plt.show()
-        save_samples_images(generated_images, "sample.png")
+    
+        # Save and show images
+        save_samples_images(generated_images, "sample.png", NUM_IMAGES, NUM_ROWS_SAMPLE, H, W)
         image = plt.imread("sample.png")
-        plt.imshow(image[:28, :28], cmap="gray")
+        plt.imshow(image, cmap="gray")
         plt.show()
 
-
-generate_images()
+generate_images("uniform")
+generate_images("sweep")

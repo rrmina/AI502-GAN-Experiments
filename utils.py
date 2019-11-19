@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import torch
 
 def show(img):
-    plt.figure(figsize=(10,5))
+    plt.figure(figsize=(100,100))
     plt.imshow(img, cmap="gray")
     plt.show()
 
