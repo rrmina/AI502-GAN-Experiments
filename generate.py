@@ -65,7 +65,7 @@ def generate_images(latent="uniform"):
 
     with torch.no_grad():
         torch.cuda.empty_cache()
-        print("Generating Images")
+        print("Generating Images. Latent: {} Device: {}".format(latent, device))
         
         # Generate image tensor | Transform tensor to numpy arrays
         generated_tensor = g(z)
@@ -73,8 +73,9 @@ def generate_images(latent="uniform"):
         generated_images = ttoi(generated_tensor)
     
         # Save and show images
-        save_samples_images(generated_images, "sample.png", NUM_IMAGES, NUM_ROWS_SAMPLE, H, W)
-        image = plt.imread("sample.png")
+        filename = "sample_" + latent + ".png" 
+        save_samples_images(generated_images, filename, NUM_IMAGES, NUM_ROWS_SAMPLE, H, W)
+        image = plt.imread(filename)
         plt.imshow(image, cmap="gray")
         plt.show()
 
