@@ -43,6 +43,9 @@ def generate_latent_sweep(batch_size, latent_dim, device):
     
     return z
 
+def scale_back(tensor):
+    return tensor / 2 + 0.5
+
 ############################
 # Generate Function
 ############################
@@ -71,13 +74,15 @@ def generate_images(latent="uniform"):
         generated_tensor = g(z)
         generated_tensor = generated_tensor.view(-1, H, W)
         generated_images = ttoi(generated_tensor)
-    
-        # Save and show images
+
+        # Save 
         filename = "sample_" + latent + ".png" 
         save_samples_images(generated_images, filename, NUM_IMAGES, NUM_ROWS_SAMPLE, H, W)
-        image = plt.imread(filename)
-        plt.imshow(image, cmap="gray")
-        plt.show()
+
+        # and show images
+        concat_images = concatenate_images(generated_images, NUM_IMAGES, NUM_ROWS_SAMPLE) / 255
+        concat_images = concat_images.clip(0,1) # Need to clip!ename)
+        show(concat_images)
 
 generate_images("uniform")
 generate_images("sweep")
