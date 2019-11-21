@@ -15,8 +15,8 @@ BATCH_SIZE = 64
 LATENT_DIM = 128
 H = 28
 W = 28
-A_LR = 2e-4
-G_LR = 2e-4
+A_LR = 1e-3
+G_LR = 1e-3
 BETA_1 = 0.5
 BETA_2 = 0.999
 NUM_EPOCHS = 100
@@ -55,6 +55,9 @@ def train():
     # in monitoring the improvement of generator network
     fixed_z = generate_latent(20, LATENT_DIM)
 
+    def scale(tensor, mini, maxi):
+        return tensor * (maxi - mini) + mini
+
     # Train Proper
     for epoch in range(1, NUM_EPOCHS+1):
         print("========Epoch {}/{}========".format(epoch, NUM_EPOCHS))
@@ -64,6 +67,8 @@ def train():
             batch_size = real_images.shape[0]               # Get the current batch size
             real_images = real_images.view(batch_size, -1)  # Reshape the tensor
             real_images = real_images.to(device)            # Move images to the appropriate device
+            real_images = scale(real_images, -1, 1)         # Generator has Tanh output layer, so we need
+                                                            # to rescale the real images to [-1,1]
 
             # Adversary Real Loss
             a_optim.zero_grad()                             # Zero-out gradients
