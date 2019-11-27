@@ -41,7 +41,7 @@ def plotLoss(loggers):
 def plotAcc(loggers):
     fig = plt.figure(figsize=(10,10))
     plt.plot(loggers["Acc"], label="Adversary Accuracy")
-    plt.title("Training Losses")
+    plt.title("Adversary Acuracy")
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
     plt.legend()

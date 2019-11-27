@@ -25,8 +25,8 @@ NUM_EPOCHS = 200
 
 # Utils
 SAMPLE_PATH = "train_sample.pkl"
-SAVE_IMAGE_PATH = "results/"
-SAVE_MODEL_PATH = "model/"
+SAVE_IMAGE_PATH = "resultsFashion/"
+SAVE_MODEL_PATH = "modelFashion/"
 
 losses = []
 samples = []
@@ -39,7 +39,7 @@ def train():
     transform = transforms.Compose([
         transforms.ToTensor()
     ])
-    train_dataset = datasets.MNIST('data', train=True, transform=transform, download=True)
+    train_dataset = datasets.FashionMNIST('data', train=True, transform=transform, download=True)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # Load Networks

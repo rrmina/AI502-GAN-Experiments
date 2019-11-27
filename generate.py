@@ -8,7 +8,8 @@ import numpy as np
 # General settings
 ADVERSARY_MODEL_PATH = "model/final_model_a.pth"
 GENERATOR_MODEL_PATH = "model/final_model_g.pth"
-
+#ADVERSARY_MODEL_PATH = "modelFashion/final_model_a.pth"
+#GENERATOR_MODEL_PATH = "modelFashion/final_model_g.pth"
 # Hyperparameters
 H = 28
 W = 28
