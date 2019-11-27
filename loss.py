@@ -36,3 +36,9 @@ def fake_loss(x, smooth=False):
     # Compute Losss
     criterion = nn.BCEWithLogitsLoss()
     return criterion(x.squeeze(), labels)
+
+def real_loss_LS(x):
+    return torch.mean((x-1)**2)
+
+def fake_loss_LS(x):
+    return torch.mean(x**2)

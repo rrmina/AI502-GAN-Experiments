@@ -44,7 +44,7 @@ def generate_latent_sweep(batch_size, latent_dim, device):
     return z
 
 def scale_back(tensor):
-    return tensor / 2 + 0.5
+    return (tensor+1) / 2
 
 ############################
 # Generate Function
@@ -74,6 +74,7 @@ def generate_images(latent="uniform"):
         generated_tensor = g(z)
         generated_tensor = generated_tensor.view(-1, H, W)
         generated_images = ttoi(generated_tensor)
+        generated_images = scale_back(generated_images)
 
         # Save 
         filename = "sample_" + latent + ".png" 
