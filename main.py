@@ -114,13 +114,18 @@ def train():
             g_optim.step()
 
             # Calculate Adversary's Accuracy in predicting Real/Fake Images
-            
+            a_fake_pred = torch.sigmoid(a_fake_out.clone().detach()).cpu().numpy()      # The outputs of adversary are logits therefore
+            a_real_pred = torch.sigmoid(a_real_out.clone().detach()).cpu().numpy()      # we stil need to apply sigmoid to calculate 
+            acc = (np.mean(a_real_pred > 0.5) + np.mean(a_fake_pred < 0.5))/2           # their prediction confidence [0,1]
 
             # Record Batch Losses
             logger.updateEpochLogger(curr_loggers, [a_loss.item(), g_loss.item(), acc])
 
         # Print Losses
-        print("Adversary Loss: {} Generator Loss: {}".format(a_loss.item(), g_loss.item()))
+        print("Adversary Loss: {} Generator Loss: {} Adversary Accuracy: {}".format(a_loss.item(), g_loss.item(), acc))
+
+        # Update Global Logger
+        logger.updateGlobalLogger(loggers, curr_loggers)
 
         # Generate sample fake images after each epoch
         g.eval()
@@ -135,9 +140,13 @@ def train():
         sample_image_path = SAVE_IMAGE_PATH + "epoch" + str(epoch) + ".png"
         utils.save_samples_images(sample_images, sample_image_path)
 
+    # Plot Training Loss and Adversary Accuracy
+    logger.globalPlot(loggers)
+
     # Save sample fake images
-    with open(SAMPLE_PATH, 'wb') as f:
-        pkl.dump(sample_images, f)
+    # Uncomment these to browse through samples saved as pickle dump!
+    # with open(SAMPLE_PATH, 'wb') as f:
+    #    pkl.dump(sample_images, f)
 
     # Save the final model
     final_path = SAVE_MODEL_PATH + "final_model"
